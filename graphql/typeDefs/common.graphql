@@ -1,0 +1,15 @@
+
+  type statusResponse{
+    success: Boolean
+    code : Int
+    message: String
+  }
+  type stringResponse{
+    docs:String
+    status:statusResponse
+  }
+  type booleanResponse{
+    docs:Boolean
+    status:statusResponse
+  }
+

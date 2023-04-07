@@ -1,0 +1,60 @@
+
+
+type user {
+    firstName: String
+    lastName: String
+    referralCode:String
+    email:String
+    created_on: String
+  }
+
+input userInput {
+  firstName: String!
+    lastName: String!
+    walletAddress: String
+}
+
+
+  type userSignIn {
+    firstName: String
+    lastName: String
+    email: String
+    token: String
+    success: Boolean
+    emailVerified: Boolean
+    errorField: String
+  }
+    type signInResponse{
+    docs: userSignIn
+    status:statusResponse
+  }
+
+  type searchUser{
+  docs:[user]
+  status:statusResponse
+  }
+  type Query {
+    searchCustomerByEmail(email:String!): searchUser
+  }
+
+type Signup{
+  success: Boolean!
+  message: String
+  errorField: String
+}
+type signUpResponse{
+  docs: Signup
+  status: statusResponse
+}
+
+
+  
+  type Mutation {
+    saveUser(
+      firstName: String!
+      lastName: String!
+      email: String!
+      password: String!
+    ): signUpResponse!
+    signInAuth(email: String!, password: String!): signInResponse
+  }
