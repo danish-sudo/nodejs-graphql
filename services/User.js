@@ -1,20 +1,16 @@
-import JWT from "jsonwebtoken";
-
 import bcrypt from "bcryptjs";
-import jsonwebtoken from "jsonwebtoken";
 import User from "../models/User.js";
 import { success } from "../utils/responseCodes.js";
+import { assignJWTToken } from "./Auth.js";
 
 export const saveNewAccount = async (firstName, lastName, email, password) => {
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  newUser = new User({
+  const newUser = new User({
     firstName,
     lastName,
     email,
-    password: hashedPassword,
+    password,
   });
+  await newUser.save();
   return { success: true, message: "Account SuccessFully Created" };
 };
 
@@ -33,16 +29,11 @@ export const authenticateSignIn = async (user, password) => {
         errorField: "password",
       });
     } else {
-      // check if verified
-      const token = jsonwebtoken.sign(
-        {
-          id: user.id,
-          email: user.email,
-          permissionLevel: user.permissionLevel,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
+      const token = await assignJWTToken({
+        id: user.id,
+        email: user.email,
+      });
+
       return success({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -54,20 +45,6 @@ export const authenticateSignIn = async (user, password) => {
   }
 };
 
-export const verifyResetToken = async (token) => {
-  const decoded = JWT.verify(token, process.env.JWT_SECRET);
-  const user = await findCustomer(decoded.email);
-  if (user) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-export const findUser = async (email) => {
-  const user = await User.findOne({ email: email });
-  return user;
-};
 export const searchCustomers = async (email) => {
   const users = await User.find({
     email: { $regex: email, $options: "i" },

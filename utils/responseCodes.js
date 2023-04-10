@@ -9,7 +9,5 @@ export const InternalError = () => {
 };
 
 export const AccessDenied = () => {
-  return {
-    status: { success: false, code: 403, message: "Unauthorized" },
-  };
+  throw new Error("Access denied.");
 };

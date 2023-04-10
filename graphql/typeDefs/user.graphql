@@ -1,4 +1,13 @@
 
+ directive @throws(
+    types: [Throws!]!
+  ) on FIELD_DEFINITION
+
+  input Throws {
+    type: String!
+    message: String!
+  }
+
 
 type user {
     firstName: String
@@ -34,7 +43,14 @@ input userInput {
   status:statusResponse
   }
   type Query {
-    searchCustomerByEmail(email:String!): searchUser
+    privateCall:String
+    test: String
+    searchCustomerByEmail: searchUser
+     @throws(
+        types: [
+          { type: "AccessDeniedError", message: "Access denied." }
+        ]
+      )
   }
 
 type Signup{

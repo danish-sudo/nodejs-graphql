@@ -20,9 +20,17 @@ const startApolloServer = async () => {
   });
 
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
+    // introspection: false,
+    // Using graphql-upload without CSRF prevention is very insecure.
+    csrfPrevention: true,
+    cache: "bounded",
+    playground: false,
+    context: async ({ req }) => ({
+      auth: req.headers.authorization,
+    }),
   });
+
   await server.start();
 
   server.applyMiddleware({ app });
